@@ -806,6 +806,36 @@ function ccat() {
     fi
 }
 
+# 获取平台类型，mac还是linux平台
+function get_platform_type()
+{
+    echo $(uname)
+}
+
+# 获取linux平台类型，ubuntu还是centos
+function get_linux_platform_type()
+{
+    if which apt-get > /dev/null ; then
+        echo "ubuntu" # debian ubuntu系列
+    elif which yum > /dev/null ; then
+        echo "centos" # centos redhat系列
+    elif which pacman > /dev/null; then
+        echo "archlinux" # archlinux系列
+    else
+        echo "invaild"
+    fi
+}
+
+# 判断是否是ubuntu16.04LTS版本
+function is_ubuntu1604()
+{
+    version=$(cat /etc/lsb-release | grep "DISTRIB_RELEASE")
+    if [ ${version} == "DISTRIB_RELEASE=16.04" ]; then
+        echo 1
+    else
+        echo 0
+    fi
+}
 
 ##############################################################################
 # 好玩的配置
