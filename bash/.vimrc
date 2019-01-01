@@ -8,7 +8,6 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 通用设置
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let mapleader = " "      " 定义<leader>键
 set nocompatible         " 设置不兼容原始vi模式
 filetype on              " 设置开启文件类型侦测
 filetype plugin on       " 设置加载对应文件类型的插件
@@ -92,6 +91,12 @@ endif
 " 打开文件自动定位到最后编辑的位置
 autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | execute "normal! g'\"" | endif
 
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" 键盘快捷键定义
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let mapleader = " "      " 定义<leader>键
+
 " 安装、更新、删除插件
 nnoremap <leader><leader>i :PlugInstall<cr>
 nnoremap <leader><leader>u :PlugUpdate<cr>
@@ -102,6 +107,12 @@ nnoremap <c-j> <c-w>j
 nnoremap <c-k> <c-w>k
 nnoremap <c-h> <c-w>h
 nnoremap <c-l> <c-w>l
+
+" 帮助提速快捷键
+nmap <leader>w  :w!<cr>     " 保存快捷键
+nmap <leader>f  :find<cr>   " 查找快捷键 
+nmap <leader>q  :q<cr>      " 退出快捷键
+nmap <leader>wq :wq!<cr>    " 保存退出快捷键
 
 "新建.c,.h,.sh,.java文件，自动插入文件头 
 autocmd BufNewFile *.cpp,*.[ch],*.sh,*.java exec ":call SetTitle()" 
