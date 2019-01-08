@@ -96,6 +96,8 @@ autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | execute "
 " 键盘快捷键定义
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let mapleader = " "      " 定义<leader>键
+imap     <leader><leader>q <ESC>
+vnoremap <leader><leader>q <ESC><ESC>
 
 " 安装、更新、删除插件
 nnoremap <leader><leader>i :PlugInstall<cr>
