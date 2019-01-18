@@ -70,6 +70,6 @@ sudo update-alternatives --config g++
 ## 步骤七： 非必须，删除配置
 
 ```sh
-sudo update-alternatives --remove gcc /usr/bin/gcc-4.9
-sudo update-alternatives --remove g++ /usr/bin/g++-4.9
+sudo update-alternatives --remove gcc /usr/bin/gcc-4.4
+sudo update-alternatives --remove g++ /usr/bin/g++-4.4
 ```
