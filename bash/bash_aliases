@@ -1,0 +1,279 @@
+##############################################################################
+# 常用定制快捷方式
+# reference: https://github.com/wklken/config/blob/master/alias/zsh_aliases
+##############################################################################
+# reference: https://github.com/wklken/config/blob/master/alias/zsh_aliases
+# editor
+alias vi="vim"
+alias edit="vim"
+
+alias grep="grep -E --color"
+alias egrep="egrep --color=auto"
+alias fgrep="fgrep --color=auto"
+alias mkdir="mkdir -pv"
+alias tf='tail -f'  #动态查看文件变化
+alias af="awk -F '\t' '{print NF}'"   #查看文件列数，用\t分隔，最常用，其实也可以搞个通用的，接收参数
+alias wl='wc -l'    #统计行数
+
+# alias c="clear"   #清屏
+alias cls="clear"   #清屏
+
+# for go
+alias gor='go run'
+alias gob='go build'
+
+# tool
+alias rmpyc='find . -name "*.pyc" -exec rm -rf {} \; >> /dev/null 2>&1'  #递归删除目录下所有pyc
+alias rmlog='rm *.log;rm *.log.*'
+alias now='date +"%Y-%m-%d %T"'
+
+# for tmux
+alias tm='tmux -2'
+alias tmux='tmux -2'
+alias tma='tmux -2 attach'
+alias tmx='tmuxinator'
+
+# networking
+alias arpscan="sudo arp -an"
+alias nmapinstall="sudo aptitude install nmap"
+alias nmaproot="sudo nmap -sF -O 192.168.1.1-255"
+alias nmapos="sudo nmap -sF -O \$1"
+alias netstart='sudo service networking restart'
+
+##############################################################################
+# 有用的函数
+##############################################################################
+# https://github.com/tjy-cool/Linux_note/blob/master/bash/bash命令速查手册.sh
+# 自动解压：判断文件后缀名并调用相应解压命令
+function q-extract() {
+    if [ -f $1 ] ; then
+        case $1 in
+        *.tar.bz2)   tar -xvjf $1    ;;
+        *.tar.gz)    tar -xvzf $1    ;;
+        *.tar.xz)    tar -xvJf $1    ;;
+        *.bz2)       bunzip2 $1     ;;
+        *.rar)       rar x $1       ;;
+        *.gz)        gunzip $1      ;;
+        *.tar)       tar -xvf $1     ;;
+        *.tbz2)      tar -xvjf $1    ;;
+        *.tgz)       tar -xvzf $1    ;;
+        *.zip)       unzip $1       ;;
+        *.Z)         uncompress $1  ;;
+        *.7z)        7z x $1        ;;
+        *)           echo "don't know how to extract '$1'..." ;;
+        esac
+    else
+        echo "'$1' is not a valid file!"
+    fi
+}
+
+# 自动压缩：判断后缀名并调用相应压缩程序
+function q-compress() {
+    if [ -n "$1" ] ; then
+        FILE=$1
+        case $FILE in
+        *.tar) shift && tar -cf $FILE $* ;;
+        *.tar.bz2) shift && tar -cjf $FILE $* ;;
+        *.tar.xz) shift && tar -cJf $FILE $* ;;
+        *.tar.gz) shift && tar -czf $FILE $* ;;
+        *.tgz) shift && tar -czf $FILE $* ;;
+        *.zip) shift && zip $FILE $* ;;
+        *.rar) shift && rar $FILE $* ;;
+        esac
+    else
+        echo "usage: q-compress <foo.tar.gz> ./foo ./bar"
+    fi
+}
+
+# 漂亮的带语法高亮的 color cat ，需要先 pip install pygments
+function ccat() {
+    local style="monokai"
+    if [ $# -eq 0 ]; then
+        pygmentize -P style=$style -P tabsize=4 -f terminal256 -g
+    else
+        for NAME in $@; do
+            pygmentize -P style=$style -P tabsize=4 -f terminal256 -g "$NAME"
+        done
+    fi
+}
+
+#分屏同时打开多个文件
+#vim -oN filea fileb filec
+function vo(){
+   vim -o$# $*
+}
+ 
+#创建一个目录并跳转到
+#make a dir and cd into it
+function mcd(){
+    mkdir -pv "$@"
+    cd "$@"
+}
+
+#最常用，复制一个路径过来时，不用修改，可以到达路径的最深一层目录
+#if dir,cd into it. if file ,cd into where the file is
+function goto()
+{ 
+    [ -d "$1" ] && cd "$1" || cd "$(dirname "$1")"; 
+}
+
+#查看自己常用命令top n
+# View most commonly used commands. depends on your history output format
+function used(){
+    if [ $1 ]
+    then
+        history | awk '{print $4}' | sort | uniq -c | sort -nr | head -n $1
+    else
+        history | awk '{print $4}' | sort | uniq -c | sort -nr | head -n 10
+    fi
+}
+
+##############################################################################
+# 给 man 增加漂亮的色彩高亮
+# Reference: https://github.com/tjy-cool/Linux_note/blob/master/bash/bash命令速查手册.sh
+##############################################################################
+export LESS_TERMCAP_mb=$'\E[1m\E[32m'
+export LESS_TERMCAP_mh=$'\E[2m'
+export LESS_TERMCAP_mr=$'\E[7m'
+export LESS_TERMCAP_md=$'\E[1m\E[36m'
+export LESS_TERMCAP_ZW=""
+export LESS_TERMCAP_us=$'\E[4m\E[1m\E[37m'
+export LESS_TERMCAP_me=$'\E(B\E[m'
+export LESS_TERMCAP_ue=$'\E[24m\E(B\E[m'
+export LESS_TERMCAP_ZO=""
+export LESS_TERMCAP_ZN=""
+export LESS_TERMCAP_se=$'\E[27m\E(B\E[m'
+export LESS_TERMCAP_ZV=""
+export LESS_TERMCAP_so=$'\E[1m\E[33m\E[44m'
+
+##############################################################################
+# up
+# Reference: https://github.com/shannonmoeller/up/blob/master/up.sh
+##############################################################################
+# up.sh: Quickly traverse up the current working path.
+# Author: Shannon Moeller <me@shannonmoeller.com>
+# Source to use: [ -f /path/to/up.sh ] && . /path/to/up.sh
+
+__updir() {
+	if [[ "$1" == "/" || -z "$1" || -z "$2" ]]; then
+		return
+	fi
+
+	local p="$(dirname $1)"
+	local a="$(basename $p)"
+	local b="$(basename $2)"
+
+	if [[ -z "$a" || -z "$b" ]]; then
+		return
+	fi
+
+	if [[ "$a" == "$b"* ]]; then
+		echo "$p"
+		return
+	fi
+
+	__updir "$p" "$2"
+}
+
+__upnum() {
+	if [[ -z "$1" || -z "$2" || ! "$2" =~ ^[0-9]+$ ]]; then
+		return
+	fi
+
+	local p="$1"
+	local i="$2"
+
+	while (( i-- )); do
+		p="$(dirname $p)"
+	done
+
+	echo "$p"
+}
+
+_up() {
+	local p="$(dirname $PWD)"
+	local w="${COMP_WORDS[COMP_CWORD]}"
+
+	COMPREPLY=( $(IFS=';' compgen -S/ -W "${p//\//;}" -- "$w") )
+}
+
+up() {
+	# up one
+	if (( ! $# )); then
+		cd ..
+		return
+	fi
+
+	# up dir
+	local d="$(__updir "$PWD" "$1")"
+
+	if [[ -d "$d" ]]; then
+		cd "$d"
+		return
+	fi
+
+	# up num
+	local n="$(__upnum "$PWD" "$1")"
+
+	if [[ -d "$n" ]]; then
+		cd "$n"
+		return
+	fi
+
+	# fallback
+	if [[ $1 == - || -d $1 ]]; then
+		cd $1
+		return
+	fi
+
+	# usage
+	echo -e "usage: up [dir|num|-]\npwd: $PWD"
+}
+
+# zsh compatibility
+if [[ -n ${ZSH_VERSION-} ]]; then
+	autoload -U +X bashcompinit && bashcompinit
+fi
+
+# tab-completion
+complete -o nospace -F _up up
+
+# https://github.com/gtoTest/my-aliases/blob/gh-pages/conf-files/bash/.my_bash_aliases
+
+##############################################################################
+# Git shortcuts
+# Reference: https://github.com/wklken/config/blob/master/alias/git_aliases
+##############################################################################
+alias ga='git add '
+alias gb='git branch'
+alias gba='git branch -a'
+alias gbru='git remote prune origin'
+alias gbd='git branch -D'
+alias gc='git commit -m'
+alias gcl='git clone'
+alias gco='git checkout'
+alias gcp='git cherry-pick'
+alias gclean='git fetch --prune'
+alias gd='git diff'
+alias gdi='git di'
+alias gr='git rm'
+alias gs='git status'
+alias gss='git status -s'
+alias gl='git log'
+alias gll='git lg'
+alias gull='git pull origin'
+alias gush='git push origin'
+alias gt='git checkout'
+alias gtd='git checkout develop'
+alias gm='git merge --no-ff'
+alias grv='git remote -v'
+
+#alias gd1='echo "git diff HEAD"; git diff HEAD'
+#alias gd2='echo "git diff HEAD^"; git diff HEAD^'
+#alias gsa='git submodule add'
+#alias gsu='git submodule update --init'
+#alias gup='git fetch && git rebase'
+#alias gdv='git diff -w "$@" | vim -R -'
+#alias gcount='git shortlog -sn'
+#alias gexport='git archive --format zip --output'
+#alias gmu='git fetch origin -v; git fetch upstream -v; git merge upstream/master'
