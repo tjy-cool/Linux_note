@@ -18,6 +18,10 @@ Ubuntu 的软件源配置文件是`/etc/apt/source-list`。将系统自带的该
 ```sh
 sudo apt-get install libelf-dev
 sudo apt-get install libssl-dev
+sudo apt-get install libncurses5-dev libssl-dev
+sudo apt-get install build-essential openssl
+sudo apt-get install zlibc minizip
+sudo apt-get install libidn11-dev libidn11
 ```
 
 ## 三. 编译内核
@@ -76,7 +80,9 @@ make bzImage -j 8
 make modules -j 8
 ```
 
-### 3.4 安装内核
+## 四、安装内核
+
+### 4.1 安装内核
 
 - 安装模块
 
@@ -90,7 +96,7 @@ make modules_install
 make install
 ```
 
-### 3.5 更改启动grub
+### 4.2 更改启动grub
 
 - 查看当前
 
@@ -100,4 +106,26 @@ Linux version 4.10.0-35-generic (buildd@lcy01-33) (gcc version 5.4.0 20160609 (U
 
 $cat /boot/grub/grub.cfg | grep 4.10
 ....
+```
+
+## 五、卸载内核
+
+```txt
+删除 /lib/modules/ 目录下以内核的版本号为名称的目录
+删除 /usr/src/linux/ 目录下不需要的内核源码
+删除 /boot 目录下启动的内核和内核映像文件
+更改 grub 的配置文件，删除不需要的内核启动列表
+
+/boot/vmlinuz*KERNEL-VERSION*
+/boot/initrd*KERNEL-VERSION*​
+/boot/System-map*KERNEL-VERSION*​
+/boot/config-*KERNEL-VERSION*​
+/lib/modules
+KERNEL-VERSION代表你想卸载的内核的版本号
+最后必须更新grub ： update-grub。
+```
+
+```sh
+# 修改启动项
+sudo vim /boot/grub/grub.cfg
 ```
